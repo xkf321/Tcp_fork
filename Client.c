@@ -8,8 +8,7 @@
 #include <sys/socket.h> 
 #include <arpa/inet.h>
 #include <unistd.h>
-
-int main(int argc, char *argv[])　/*　传入服务端的ip和端口　*/
+int main(int argc, char *argv[])/*　传入服务端的ip和端口　*/
 {
 	struct sockaddr_in addr_Serve;
 	int sockfd;
@@ -46,9 +45,22 @@ int main(int argc, char *argv[])　/*　传入服务端的ip和端口　*/
 	printf("Please input char:\n");
 	
 	/* 发送数据 */
-	fgets(buffer,1024,stdin); 
-	write(sockfd,buffer,strlen(buffer)); 
-
+	scanf("%s",buffer); 
+	write(sockfd,buffer,1024); 
+	memset(&buffer,0,sizeof(buffer));
+	int nbytes;
+	
+	if((nbytes=read(sockfd,buffer,1024)) == -1)
+	{
+		perror("read");
+		return -1;
+	}
+	else
+	{
+		buffer[nbytes-1]='\0';
+		printf("Server had received. Server Send back:%s,nbytes=%d\n",buffer,nbytes);
+	}
+	
 	/* 结束通讯 */ 
 	close(sockfd); 
 	exit(0); 

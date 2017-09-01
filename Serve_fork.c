@@ -9,6 +9,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
+
 /*
 服务器端程序包括
 Ø  建立套接字（ socket()）
@@ -18,6 +20,7 @@
 Ø  接收和发送数据（send(),recv()）
 Ø  关闭套接字(close())
 */
+
 
 int main(int argc, char *argv[]) /*　传入服务端的ip和端口　*/
 {
@@ -84,18 +87,31 @@ int main(int argc, char *argv[]) /*　传入服务端的ip和端口　*/
 		{
 			/*child process*/
 			char buffer[1024]={0};
+			char buffer_t[1024]="*I am Serve*";
+			
+			
+			printf("buffer_t=%s\n",buffer_t);
 			int nbytes;			
 			printf("Server get connection from %s.It's port is %d\n",inet_ntoa(addr_Client.sin_addr),ntohs(addr_Client.sin_port));/* 将网络地址转换成.字符串 */
 			//printf("sizeof =%d\n",sizeof(buffer));
-			if(( nbytes= read(Accepcted_fd,buffer,sizeof(buffer)))== -1)
+			
+			if(( nbytes= read(Accepcted_fd,buffer,1024))== -1)
 			{
 				perror("Read error\n");
 			}
 			else
 			{
-				buffer[nbytes]='\0';
+				buffer[nbytes-1]='\0';
 				printf("Server received string is :%s\n",buffer);
 			}
+			
+			//printf("sizeof(buffer)= %d,strlen(buffer)=%d\n",sizeof(buffer),strlen(buffer));
+			printf("buffer=%s \n",buffer);
+			printf("buffer_t=%s\n",buffer_t);
+			strncat(buffer_t,buffer,strlen(buffer));
+			printf("buffer_t=%s\n",buffer_t);
+			int Acpt_rt=write(Accepcted_fd,buffer_t,1024);
+			printf("Acpt_rt= %d\n",Acpt_rt);
 			
 			close(Child_pid);
 			close(Listen_sockfd);

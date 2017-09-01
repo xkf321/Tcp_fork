@@ -63,14 +63,18 @@ int main(int argc, char *argv[]) /*　传入服务端的ip和端口　*/
 		} 
 		 
 		printf("Server get connection from %s.It's port is %d\n",inet_ntoa(addr_Client.sin_addr),ntohs(addr_Client.sin_port));/* 将网络地址转换成.字符串 */
-		if((nbytes=read(new_fd,buffer,1024))==-1) 
+		if((nbytes=read(new_fd,buffer,sizeof(buffer)))==-1) 
 		{ 
 			perror("Read"); 
 			exit(1); 
 		} 		
 		buffer[nbytes]='\0';
 		printf("Server received %s\n",buffer);
-		
+		char buffer_t[1024]={0};
+		strncat(buffer_t,buffer,strlen(buffer)-1);
+		printf("buffer_t= %s\n",buffer_t);
+		int Acpt_rt=write(new_fd,buffer_t,sizeof(buffer_t));
+		printf("Acpt_rt= %d\n",Acpt_rt);		
 		/* 这个通讯已经结束 */ 
 		close(new_fd); 
 		/* 循环下一个 */ 
